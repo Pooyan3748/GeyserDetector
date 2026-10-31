@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.gxlydlyf</groupId>
+        <artifactId>geyserdetector-parent</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <artifactId>GeyserDetector-Paper</artifactId>
+    <packaging>jar</packaging>
+
+    <name>GeyserDetector Paper</name>
+    <description>Receives Bedrock detection from the proxy and exposes it to other plugins</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gxlydlyf</groupId>
+            <artifactId>geyserdetector-api</artifactId>
+        </dependency>
+        <!--
+          Cumulus appears in the public API (Form in sendForm) and is not present on a
+          Paper/Folia server, so it ships inside this jar. The proxy gets it from Geyser
+          instead, which is why this is only bundled on the backend.
+        -->
+        <dependency>
+            <groupId>org.geysermc.cumulus</groupId>
+            <artifactId>cumulus</artifactId>
+            <version>${cumulus.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <!--
+                              Bundled: the API (so consumers compile against the same types
+                              the plugin fires) and Cumulus (which the server does not provide).
+                              Guava and Gson are already on the server, so they are left out
+                              rather than shaded into a second copy.
+                            -->
+                            <artifactSet>
+                                <includes>
+                                    <include>com.gxlydlyf:geyserdetector-api</include>
+                                    <include>org.geysermc.cumulus:cumulus</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>com.gxlydlyf:geyserdetector-api</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/**</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.geysermc.cumulus:cumulus</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

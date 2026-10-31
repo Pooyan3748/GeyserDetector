@@ -1,0 +1,8 @@
+{
+  "id": "geyserdetector",
+  "name": "GeyserDetector-Velocity",
+  "version": "2.0.0",
+  "description": "Detects Bedrock players and relays them to the downstream server",
+  "authors": ["gxlydlyf"],
+  "main": "com.gxlydlyf.geyserdetector.velocity.GeyserDetectorVelocity"
+}

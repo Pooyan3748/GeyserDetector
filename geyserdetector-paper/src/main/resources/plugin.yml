@@ -1,0 +1,21 @@
+name: GeyserDetector
+version: 2.0.0
+description: Receives Bedrock player detection from the Velocity proxy and exposes it to other plugins
+author: gxlydlyf
+main: com.gxlydlyf.geyserdetector.paper.GeyserDetectorPaper
+api-version: '1.21'
+folia-supported: true
+softdepend:
+  - PlaceholderAPI
+commands:
+  geyserdetector:
+    description: Inspect Bedrock player detection
+    usage: /geyserdetector <status|list|info>
+    aliases:
+      - gdet
+      - gd
+    permission: geyserdetector.command
+permissions:
+  geyserdetector.command:
+    description: Allows using the GeyserDetector command
+    default: op

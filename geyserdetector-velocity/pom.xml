@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.gxlydlyf</groupId>
+        <artifactId>geyserdetector-parent</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <artifactId>GeyserDetector-Velocity</artifactId>
+    <packaging>jar</packaging>
+
+    <name>GeyserDetector Velocity</name>
+    <description>Detects Bedrock players on the proxy and relays them to the downstream server</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.velocitypowered</groupId>
+            <artifactId>velocity-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geysermc.geyser</groupId>
+            <artifactId>api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gxlydlyf</groupId>
+            <artifactId>geyserdetector-api</artifactId>
+        </dependency>
+
+        <!--
+          velocity-api declares its own dependencies as provided, so they do not
+          arrive transitively and must be restated here for compilation.
+        -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-api</artifactId>
+            <version>4.20.0-velocity</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--
+          Supplied at runtime by Geyser, which bundles its own Cumulus. Declared here
+          only so the form classes resolve at compile time and in an IDE.
+        -->
+        <dependency>
+            <groupId>org.geysermc.cumulus</groupId>
+            <artifactId>cumulus</artifactId>
+            <version>${cumulus.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <!--
+                              Only the shared protocol/codec classes are bundled: the message
+                              types cross the plugin-channel boundary, so the proxy needs them
+                              at runtime. Bukkit-touching API classes are excluded because a
+                              proxy has no Bukkit.
+                            -->
+                            <artifactSet>
+                                <includes>
+                                    <include>com.gxlydlyf:geyserdetector-api</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>com.gxlydlyf:geyserdetector-api</artifact>
+                                    <includes>
+                                        <include>com/gxlydlyf/geyserdetector/api/protocol/**</include>
+                                        <include>com/gxlydlyf/geyserdetector/api/BedrockPlayer.class</include>
+                                        <include>com/gxlydlyf/geyserdetector/api/BedrockPlatform.class</include>
+                                        <!--
+                                          FormBridge converts the relayed JSON back into a
+                                          Cumulus form before handing it to Geyser, so the
+                                          serializer has to travel with the plugin.
+                                        -->
+                                        <include>com/gxlydlyf/geyserdetector/api/FormSerializer.class</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

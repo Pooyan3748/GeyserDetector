@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.gxlydlyf</groupId>
+        <artifactId>geyserdetector-parent</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <artifactId>geyserdetector-api</artifactId>
+    <packaging>jar</packaging>
+
+    <name>GeyserDetector API</name>
+    <description>Shared API for detecting Bedrock players on a downstream server</description>
+
+    <dependencies>
+        <!--
+          Event classes extend org.bukkit.event.player.PlayerEvent, so the Bukkit event
+          types must be on the compile classpath. Scope 'provided' keeps this dependency
+          non-transitive, so the Velocity module never sees it.
+        -->
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+        </dependency>
+        <!--
+          Cumulus appears in public signatures (Form in sendForm), so it must be present
+          to compile against this artifact. Provided rather than compile: the backend jar
+          shades Cumulus itself, and the proxy takes it from Geyser.
+        -->
+        <dependency>
+            <groupId>org.geysermc.cumulus</groupId>
+            <artifactId>cumulus</artifactId>
+            <version>${cumulus.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
