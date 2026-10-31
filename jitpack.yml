@@ -1,4 +1,5 @@
 jdk:
   - openjdk25
 install:
-  - mvn clean install -pl geyserdetector-api -am -DskipTests
+  - mvn wrapper:wrapper -Dmaven=3.9.7
+  - ./mvnw install -pl geyserdetector-api -am -DskipTests
