@@ -1,2 +1,4 @@
 jdk:
   - openjdk25
+install:
+  - mvn clean install -pl geyserdetector-api -am -DskipTests
